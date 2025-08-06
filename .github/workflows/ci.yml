@@ -40,4 +40,4 @@ jobs:
       - name: Test
         env:
           PC_API_KEY: ${{ secrets.PC_API_KEY }}
-        run: dotnet test --no-build --verbosity detailed
+        run: dotnet test --no-build --logger "console;verbosity=detailed"
