@@ -29,7 +29,7 @@ var config = new PrivateCaptchaConfiguration
 };
 var captchaClient = new PrivateCaptchaClient(config);
 
-var result = await _captchaClient.VerifyAsync(new VerifyInput { Solution = captchaSolution });
+var result = await captchaClient.VerifyAsync(new VerifyInput { Solution = captchaSolution });
 if (result.Success)
 {
     Console.WriteLine("Captcha verification succeeded!");
@@ -96,16 +96,30 @@ You can customize the client's behavior by passing a `PrivateCaptchaConfiguratio
 | `FailedStatusCode` | The `HttpStatusCode` to return when middleware verification fails.                                      | `HttpStatusCode.Forbidden` (403) |
 | `HttpClient`       | An optional `HttpClient` instance. If not provided, a new one will be created and managed by the client. | `null`                         |
 
-### Example: Using the EU domain and a custom status code
+#### Non-standard backend domains
+
+For EU isolation you can use built-in constant `Domains.EU` or, in case of self-hosting, custom override:
 
 ```csharp
 var config = new PrivateCaptchaConfiguration
 {
     ApiKey = "YOUR_API_KEY",
-    Domain = Domains.EU,
-    FailedStatusCode = System.Net.HttpStatusCode.BadRequest // Return 400 on failure
+    Domain = Domains.EU
 };
 var client = new PrivateCaptchaClient(config);
+```
+
+#### Retry configuration
+
+When verifying puzzle solutions, you can also specify some retry and backoff options.
+
+```csharp
+var input = new VerifyInput
+{
+	Solution = "captcha-solution",
+	MaxBackoffSeconds = 30,
+	MaxAttempts = 10
+};
 ```
 
 ### Error Handling
