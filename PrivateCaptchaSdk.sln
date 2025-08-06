@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateCaptcha", "PrivateCaptcha\PrivateCaptcha.csproj", "{30138D66-87AF-4363-84E0-D1101A551FAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateCaptcha.Tests", "PrivateCaptcha.Tests\PrivateCaptcha.Tests.csproj", "{08A3C42F-059D-46AF-9233-125017E3E546}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30138D66-87AF-4363-84E0-D1101A551FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30138D66-87AF-4363-84E0-D1101A551FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30138D66-87AF-4363-84E0-D1101A551FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30138D66-87AF-4363-84E0-D1101A551FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08A3C42F-059D-46AF-9233-125017E3E546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08A3C42F-059D-46AF-9233-125017E3E546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08A3C42F-059D-46AF-9233-125017E3E546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08A3C42F-059D-46AF-9233-125017E3E546}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
