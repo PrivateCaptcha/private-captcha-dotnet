@@ -107,12 +107,13 @@ public class PrivateCaptchaClient : IDisposable
             }
             catch (PrivateCaptchaHttpException ex)
             {
-                lastException = ex;
-
                 if (IsRetriableStatusCode(ex.StatusCode))
+                {
+                    lastException = ex;
                     continue;
+                }
 
-                break;
+                throw;
             }
             catch (TaskCanceledException ex)
             {

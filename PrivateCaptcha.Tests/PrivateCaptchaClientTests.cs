@@ -94,10 +94,12 @@ namespace PrivateCaptcha.Tests
             var solutionsStr = Convert.ToBase64String(emptySolutions);
             var payload = $"{solutionsStr}.{puzzle}";
 
-            var output = await client.VerifyAsync(new VerifyInput { Solution = payload });
+            var exception = await Assert.ThrowsExceptionAsync<PrivateCaptchaHttpException>(async () =>
+            {
+                await client.VerifyAsync(new VerifyInput { Solution = payload });
+            });
 
-            Assert.IsFalse(output.Success);
-            Assert.AreEqual(VerifyCode.ParseResponse, output.Code);
+            Assert.AreEqual(400, exception.StatusCode);
         }
 
         [TestMethod]
