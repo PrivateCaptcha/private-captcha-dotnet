@@ -70,7 +70,7 @@ public class VerifyOutput
     public string Timestamp { get; set; }
 
     [JsonIgnore]
-    public string RequestId { get; internal set; }
+    public string TraceID { get; internal set; }
 
     [JsonIgnore]
     public int Attempts { get; internal set; }

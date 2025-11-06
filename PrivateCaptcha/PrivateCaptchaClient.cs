@@ -157,9 +157,9 @@ public class PrivateCaptchaClient : IDisposable
             Debug.WriteLine($"[PrivateCaptcha] Sending HTTP request to {_endpoint}");
 
             var response = await _httpClient.SendAsync(request, cancellationToken);
-            var requestId = response.Headers.GetValues(Constants.HeaderTraceId).FirstOrDefault();
+            var traceID = response.Headers.GetValues(Constants.HeaderTraceId).FirstOrDefault();
 
-            Debug.WriteLine($"[PrivateCaptcha] Received HTTP response. code={(int)response.StatusCode} traceID={requestId}");
+            Debug.WriteLine($"[PrivateCaptcha] Received HTTP response. code={(int)response.StatusCode} traceID={traceID}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -171,7 +171,7 @@ public class PrivateCaptchaClient : IDisposable
                     retryAfterSeconds = (int)response.Headers.RetryAfter.Delta.Value.TotalSeconds;
                     Debug.WriteLine($"[PrivateCaptcha] Rate limited, retry after {retryAfterSeconds}s");
                 }
-                throw new PrivateCaptchaHttpException((int)response.StatusCode, retryAfterSeconds, requestId);
+                throw new PrivateCaptchaHttpException((int)response.StatusCode, retryAfterSeconds, traceID);
             }
 
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -184,7 +184,7 @@ public class PrivateCaptchaClient : IDisposable
                 result = new VerifyOutput { Success = false, Code = VerifyCode.ParseResponse };
             }
 
-            result.RequestId = requestId;
+            result.TraceID = traceID;
             return result;
         }
     }
