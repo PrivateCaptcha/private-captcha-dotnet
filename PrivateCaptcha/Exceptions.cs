@@ -12,12 +12,14 @@ public class PrivateCaptchaHttpException : PrivateCaptchaException
 {
     public int StatusCode { get; }
     public int? RetryAfterSeconds { get; }
+    public string TraceID { get; }
 
-    public PrivateCaptchaHttpException(int statusCode, int? retryAfterSeconds = null)
+    public PrivateCaptchaHttpException(int statusCode, int? retryAfterSeconds = null, string traceID = "")
         : base($"HTTP error {statusCode}")
     {
         StatusCode = statusCode;
         RetryAfterSeconds = retryAfterSeconds;
+        TraceID = traceID;
     }
 }
 
