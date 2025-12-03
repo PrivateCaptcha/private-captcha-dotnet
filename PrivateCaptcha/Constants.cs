@@ -10,4 +10,5 @@ internal static class Constants
     public const string HeaderApiKey = "X-Api-Key";
     public const string HeaderTraceId = "X-Trace-ID";
     public const string HeaderUserAgent = "User-Agent";
+    public const string HeaderSitekey = "X-PC-Sitekey";
 }

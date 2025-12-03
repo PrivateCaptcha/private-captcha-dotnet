@@ -94,7 +94,7 @@ public class PrivateCaptchaClient : IDisposable
 
             try
             {
-                response = await DoVerifyAsync(input.Solution, cancellationToken);
+                response = await DoVerifyAsync(input.Solution, input.Sitekey, cancellationToken);
                 response.Attempts = attempt + 1;
 
                 Debug.WriteLine($"[PrivateCaptcha] Verification request completed successfully on attempt {attempt + 1}");
@@ -145,7 +145,7 @@ public class PrivateCaptchaClient : IDisposable
         }
     }
 
-    private async Task<VerifyOutput> DoVerifyAsync(string solution, CancellationToken cancellationToken)
+    private async Task<VerifyOutput> DoVerifyAsync(string solution, string sitekey, CancellationToken cancellationToken)
     {
         using (var request = new HttpRequestMessage(HttpMethod.Post, _endpoint))
         {
@@ -153,6 +153,10 @@ public class PrivateCaptchaClient : IDisposable
 
             request.Headers.Add(Constants.HeaderApiKey, _apiKey);
             request.Headers.Add(Constants.HeaderUserAgent, Constants.UserAgent);
+            if (sitekey.Length > 0)
+            {
+                request.Headers.Add(Constants.HeaderSitekey, sitekey);
+            }
 
             Debug.WriteLine($"[PrivateCaptcha] Sending HTTP request to {_endpoint}");
 
