@@ -190,7 +190,7 @@ namespace PrivateCaptcha.Tests
         }
 
         [TestMethod]
-        public async Task Middleware_WithCustomFormField_ShouldSucceedAndFailWithDefault()
+        public async Task Middleware_WithTestPuzzle_ShouldRejectTestProperty()
         {
             var puzzle = await FetchTestPuzzleAsync();
             var customFieldName = "my-custom-captcha-field";
@@ -208,42 +208,93 @@ namespace PrivateCaptcha.Tests
                 nextCalled = true;
                 return Task.CompletedTask;
             };
-            var middleware = new PrivateCaptchaMiddleware(next);
+
+            VerifyOutput capturedOutput = null;
+            Func<HttpContext, VerifyOutput, Task> onVerificationFailed = (ctx, output) =>
+            {
+                capturedOutput = output;
+                return Task.CompletedTask;
+            };
+
+            var middleware = new PrivateCaptchaMiddleware(next, onVerificationFailed);
 
             var emptySolutions = new byte[SolutionsCount * SolutionLength];
             var solutionsStr = Convert.ToBase64String(emptySolutions);
             var payload = $"{solutionsStr}.{puzzle}";
 
-            // Test success with custom field name
-            var successContext = new DefaultHttpContext();
-            successContext.Request.Method = "POST";
-            successContext.Request.ContentType = "application/x-www-form-urlencoded";
-            var successForm = new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>
+            // Test that middleware rejects test puzzle (TestProperty code)
+            var context = new DefaultHttpContext();
+            context.Request.Method = "POST";
+            context.Request.ContentType = "application/x-www-form-urlencoded";
+            var form = new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>
             {
                 { customFieldName, payload }
             };
-            successContext.Request.Form = new FormCollection(successForm);
+            context.Request.Form = new FormCollection(form);
 
-            await middleware.InvokeAsync(successContext, client);
+            await middleware.InvokeAsync(context, client);
 
-            Assert.IsTrue(nextCalled, "Next delegate should be called on success.");
-            Assert.AreEqual(200, successContext.Response.StatusCode);
+            Assert.IsFalse(nextCalled, "Next delegate should not be called when verification returns TestProperty.");
+            Assert.AreEqual((int)HttpStatusCode.Forbidden, context.Response.StatusCode);
 
-            // Test failure with default field name
-            nextCalled = false;
-            var failureContext = new DefaultHttpContext();
-            failureContext.Request.Method = "POST";
-            failureContext.Request.ContentType = "application/x-www-form-urlencoded";
-            var failureForm = new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>
+            // Verify the error code is TestProperty via the failure handler
+            Assert.IsNotNull(capturedOutput, "Failure handler should have been called.");
+            Assert.IsFalse(capturedOutput.OK(), "Output.OK() should return false for TestProperty.");
+            Assert.AreEqual(VerifyCode.TestProperty, capturedOutput.Code);
+            Assert.AreEqual("property-test", capturedOutput.GetErrorMessage());
+        }
+
+        [TestMethod]
+        public async Task Middleware_WithDefaultFormField_ShouldRejectTestProperty()
+        {
+            var puzzle = await FetchTestPuzzleAsync();
+
+            var config = new PrivateCaptchaConfiguration
+            {
+                ApiKey = GetApiKey(),
+            };
+            var client = new PrivateCaptchaClient(config);
+
+            var nextCalled = false;
+            RequestDelegate next = (ctx) =>
+            {
+                nextCalled = true;
+                return Task.CompletedTask;
+            };
+
+            VerifyOutput capturedOutput = null;
+            Func<HttpContext, VerifyOutput, Task> onVerificationFailed = (ctx, output) =>
+            {
+                capturedOutput = output;
+                return Task.CompletedTask;
+            };
+
+            var middleware = new PrivateCaptchaMiddleware(next, onVerificationFailed);
+
+            var emptySolutions = new byte[SolutionsCount * SolutionLength];
+            var solutionsStr = Convert.ToBase64String(emptySolutions);
+            var payload = $"{solutionsStr}.{puzzle}";
+
+            // Test that middleware rejects test puzzle with default field name
+            var context = new DefaultHttpContext();
+            context.Request.Method = "POST";
+            context.Request.ContentType = "application/x-www-form-urlencoded";
+            var form = new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>
             {
                 { Constants.DefaultFormField, payload }
             };
-            failureContext.Request.Form = new FormCollection(failureForm);
+            context.Request.Form = new FormCollection(form);
 
-            await middleware.InvokeAsync(failureContext, client);
+            await middleware.InvokeAsync(context, client);
 
-            Assert.IsFalse(nextCalled, "Next delegate should not be called on failure with default field.");
-            Assert.AreEqual((int)HttpStatusCode.Forbidden, failureContext.Response.StatusCode);
+            Assert.IsFalse(nextCalled, "Next delegate should not be called when verification returns TestProperty.");
+            Assert.AreEqual((int)HttpStatusCode.Forbidden, context.Response.StatusCode);
+
+            // Verify the error code is TestProperty via the failure handler
+            Assert.IsNotNull(capturedOutput, "Failure handler should have been called.");
+            Assert.IsFalse(capturedOutput.OK(), "Output.OK() should return false for TestProperty.");
+            Assert.AreEqual(VerifyCode.TestProperty, capturedOutput.Code);
+            Assert.AreEqual("property-test", capturedOutput.GetErrorMessage());
         }
     }
 }
