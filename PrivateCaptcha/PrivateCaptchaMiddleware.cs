@@ -18,8 +18,8 @@ namespace PrivateCaptcha
 
         public async Task InvokeAsync(HttpContext context, PrivateCaptchaClient client)
         {
-            // Only POST requests with a form content type are checked
-            if (context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) && context.Request.HasFormContentType)
+            // Check any request with form content type
+            if (context.Request.HasFormContentType)
             {
                 var solution = context.Request.Form[client.FormField];
                 VerifyOutput output = null;
