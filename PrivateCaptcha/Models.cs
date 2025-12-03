@@ -75,6 +75,11 @@ public class VerifyOutput
     [JsonIgnore]
     public int Attempts { get; internal set; }
 
+    public bool OK()
+    {
+        return Success && (Code == VerifyCode.NoError);
+    }
+
     public string GetErrorMessage()
     {
         return Code.GetErrorString();

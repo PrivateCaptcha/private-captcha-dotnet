@@ -77,6 +77,7 @@ namespace PrivateCaptcha.Tests
             var output = await client.VerifyAsync(new VerifyInput { Solution = payload });
 
             Assert.IsTrue(output.Success);
+            Assert.IsFalse(output.OK());
             Assert.AreEqual(VerifyCode.TestProperty, output.Code);
         }
 

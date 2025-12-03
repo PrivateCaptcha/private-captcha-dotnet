@@ -24,7 +24,7 @@ namespace PrivateCaptcha
                 try
                 {
                     var output = await client.VerifyAsync(new VerifyInput { Solution = solution }, context.RequestAborted);
-                    verified = output.Success;
+                    verified = output.OK();
                 }
                 catch (Exception ex) when (ex is PrivateCaptchaException || ex is ArgumentException)
                 {

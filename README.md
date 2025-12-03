@@ -30,7 +30,7 @@ var config = new PrivateCaptchaConfiguration
 var captchaClient = new PrivateCaptchaClient(config);
 
 var result = await captchaClient.VerifyAsync(new VerifyInput { Solution = captchaSolution });
-if (result.Success)
+if (result.OK())
 {
     Console.WriteLine("Captcha verification succeeded!");
 }
@@ -124,7 +124,7 @@ var input = new VerifyInput
 
 ### Error Handling
 
-- **`VerifyOutput`**: The `VerifyAsync` method returns a `VerifyOutput` object. Check the `Success` property to see if verification passed. If `Success` is `false`, the `Code` property and `GetErrorMessage()` method provide more details.
+- **`VerifyOutput`**: The `VerifyAsync` method returns a `VerifyOutput` object. Call the `OK()` method to see if verification passed. If result is `false`, the `Code` property and `GetErrorMessage()` method provide more details.
 - **`VerificationFailedException`**: Thrown when the client cannot get a definitive success/fail response from the API after all retry attempts. This typically indicates a network issue.
 - **`ArgumentException`**: Thrown by `VerifyAsync` if the provided `VerifyInput.Solution` is null or empty.
 
