@@ -1,5 +1,7 @@
 # Private Captcha for .NET
 
+[![CI](https://github.com/PrivateCaptcha/private-captcha-dotnet/actions/workflows/ci.yml/badge.svg)](https://github.com/PrivateCaptcha/private-captcha-dotnet/actions/workflows/ci.yml)
+
 Official .NET SDK for server-side verification of Private Captcha solutions.
 
 <mark>Please check the [official documentation](https://docs.privatecaptcha.com/docs/integrations/dotnet/) for the in-depth and up-to-date information.</mark>
