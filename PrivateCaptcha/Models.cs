@@ -16,7 +16,8 @@ public enum VerifyCode
     VerifiedBefore = 8,
     MaintenanceMode = 9,
     TestProperty = 10,
-    Integrity = 11
+    Integrity = 11,
+    OrgScope = 12
 }
 
 public static class VerifyCodeExtensions
@@ -49,6 +50,8 @@ public static class VerifyCodeExtensions
                 return "property-test";
             case VerifyCode.Integrity:
                 return "integrity-error";
+            case VerifyCode.OrgScope:
+                return "org-scope-error";
             default:
                 return "error";
         }
