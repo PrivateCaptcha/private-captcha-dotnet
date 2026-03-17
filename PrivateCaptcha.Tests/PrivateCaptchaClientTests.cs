@@ -16,6 +16,7 @@ namespace PrivateCaptcha.Tests
     {
         private const int SolutionsCount = 16;
         private const int SolutionLength = 8;
+        private const string _testSitekey = "aaaaaaaabbbbccccddddeeeeeeeeeeee";
 
         private static string _testPuzzle;
         private static readonly SemaphoreSlim _puzzleSemaphore = new SemaphoreSlim(1, 1);
@@ -36,7 +37,7 @@ namespace PrivateCaptcha.Tests
                     return _testPuzzle;
                 }
 
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://api.privatecaptcha.com/puzzle?sitekey=aaaaaaaabbbbccccddddeeeeeeeeeeee");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://api.privatecaptcha.com/puzzle?sitekey=" + _testSitekey);
                 request.Headers.Add("Origin", "not.empty");
 
                 var response = await _httpClient.SendAsync(request);
@@ -74,7 +75,7 @@ namespace PrivateCaptcha.Tests
             var solutionsStr = Convert.ToBase64String(emptySolutions);
             var payload = $"{solutionsStr}.{puzzle}";
 
-            var output = await client.VerifyAsync(new VerifyInput { Solution = payload });
+            var output = await client.VerifyAsync(new VerifyInput { Solution = payload, Sitekey = _testSitekey });
 
             Assert.IsTrue(output.Success);
             Assert.IsFalse(output.OK());
@@ -97,7 +98,7 @@ namespace PrivateCaptcha.Tests
 
             var exception = await Assert.ThrowsExceptionAsync<PrivateCaptchaHttpException>(async () =>
             {
-                await client.VerifyAsync(new VerifyInput { Solution = payload });
+                await client.VerifyAsync(new VerifyInput { Solution = payload, Sitekey = _testSitekey });
             });
 
             Assert.AreEqual(400, exception.StatusCode);
@@ -131,6 +132,7 @@ namespace PrivateCaptcha.Tests
             var input = new VerifyInput
             {
                 Solution = "asdf",
+                Sitekey = _testSitekey,
                 MaxBackoffSeconds = 1,
                 MaxAttempts = 4
             };
