@@ -38,4 +38,4 @@ jobs:
           dotnet pack --configuration Release --no-build --output ./nupkg /p:PackageVersion=$VERSION
 
       - name: Publish
-        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} # zizmor: ignore[use-trusted-publishing]
