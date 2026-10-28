@@ -17,7 +17,8 @@ public enum VerifyCode
     MaintenanceMode = 9,
     TestProperty = 10,
     Integrity = 11,
-    OrgScope = 12
+    OrgScope = 12,
+    SolutionTiming = 13
 }
 
 public static class VerifyCodeExtensions
@@ -52,6 +53,8 @@ public static class VerifyCodeExtensions
                 return "integrity-error";
             case VerifyCode.OrgScope:
                 return "org-scope-error";
+            case VerifyCode.SolutionTiming:
+                return "solution-timing";
             default:
                 return "error";
         }
@@ -71,6 +74,9 @@ public class VerifyOutput
 
     [JsonPropertyName("timestamp")]
     public string Timestamp { get; set; }
+
+    [JsonPropertyName("edge_token")]
+    public string EdgeToken { get; set; }
 
     [JsonIgnore]
     public string TraceID { get; internal set; }
