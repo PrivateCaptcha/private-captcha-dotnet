@@ -86,7 +86,7 @@ public class PrivateCaptchaClient : IDisposable
                 if (lastException is PrivateCaptchaHttpException httpEx && httpEx.RetryAfterSeconds.HasValue)
                     delay = delay.Max(TimeSpan.FromSeconds(httpEx.RetryAfterSeconds.Value));
 
-                Debug.WriteLine($"[PrivateCaptcha] Attempt {attempt} failed with error {lastException.Message} ");
+                Debug.WriteLine($"[PrivateCaptcha] Attempt {attempt} failed with error {lastException?.Message ?? "unknown error"} ");
                 await Task.Delay(delay.Min(maxBackoff), cancellationToken);
 
                 backoffDelay = maxBackoff.Min(TimeSpan.FromMilliseconds(backoffDelay.TotalMilliseconds * 2));
